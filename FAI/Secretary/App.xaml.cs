@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace FAI_Secretary
+namespace Secretary
 {
     /// <summary>
     /// Interaction logic for App.xaml

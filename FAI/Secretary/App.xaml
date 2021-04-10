@@ -1,8 +1,8 @@
-﻿<Application x:Class="FAI_Secretary.App"
+﻿<Application x:Class="Secretary.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:FAI_Secretary"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:Secretary"
+             StartupUri="Login.xaml">
     <Application.Resources>
          
     </Application.Resources>
