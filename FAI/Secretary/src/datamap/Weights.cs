@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Secretary
 {
     /** <summary> Weights to compute work points. </summary> */
-    class Weights
+    public class Weights
     {
         /** <summary> Weight's ID in the DB. </summary> */
         public UInt32 Id { get; set; }
@@ -38,19 +38,19 @@ namespace Secretary
 
         /** 
          * <summary> Constructor from known parameters. </summary> 
-         * <param name="id"></param>
-         * <param name="lecture"></param>
-         * <param name="practise"></param>
-         * <param name="seminar"></param>
-         * <param name="assessment"></param>
-         * <param name="classifiedAssessment"></param>
-         * <param name="exam"></param>
-         * <param name="englishLecture"></param>
-         * <param name="englishPractise"></param>
-         * <param name="englishSeminar"></param>
-         * <param name="englishAssessment"></param>
-         * <param name="englishClassifiedAssessment"></param>
-         * <param name="englishExam"></param>
+         * <param name="id"> Weight's ID in the DB.  </param>
+         * <param name="lecture"> Weight for lectures - 1 lesson tought. </param>
+         * <param name="practise"> Weight for practices - 1 lesson tought. </param>
+         * <param name="seminar"> Weight for seminars - 1 lesson tought. </param>
+         * <param name="assessment"> Weight for assessments - 1 assessment given. </param>
+         * <param name="classifiedAssessment"> Weight for classified assessments - 1 assessment given. </param>
+         * <param name="exam"> Weight for exams - 1 exam graded. </param>
+         * <param name="englishLecture"> Weight for lectures - 1 lesson tought in english. </param>
+         * <param name="englishPractise"> Weight for practices - 1 lesson tought in english. </param>
+         * <param name="englishSeminar"> Weight for seminars - 1 lesson tought in english. </param>
+         * <param name="englishAssessment"> Weight for assessments - 1 assessment given for a class in english. </param>
+         * <param name="englishClassifiedAssessment"> Weight for classified assessments - 1 assessment given for a class in english. </param>
+         * <param name="englishExam"> Weight for exams - 1 exam graded for a class in english. </param>
          */
         public Weights(UInt32 id, double lecture, double practise,
             double seminar, double assessment,

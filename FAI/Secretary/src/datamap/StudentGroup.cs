@@ -74,7 +74,7 @@ namespace Secretary
         public StudyForm Form { get; set; }
         /** <summary> Type of study the students are in. </summary> */
         public StudyType Type { get; set; }
-        /** <summary> Language of study in which the student use. </summary> */
+        /** <summary> Language of study which the students use. </summary> */
         public StudyLanguage Language { get; set; }
         /** <summary> Number of student's in a study group. </summary> */
         public UInt16 StudentCount { get; set; }
@@ -134,5 +134,22 @@ namespace Secretary
             this.Id = id;
         }
 
+        /**
+         * <summary> Assign a subject to the student group. </summary>
+         * <param name="s"> Subject to be assigned. </param>
+         */
+        public void assignSubject(Subject s)
+        {
+            this.Subjects.Add(s.Id, s);
+        }
+
+        /**
+         * <summary> Remove a subject from the student group. </summary> 
+         * <param name="s"> Subject to be assigned. </param>
+         */
+        public void removeSubject(Subject s)
+        {
+            this.Subjects.Remove(s.Id);
+        }
     }
 }

@@ -25,10 +25,24 @@ namespace Secretary
      */
     public class DBLoginEncrypted
     {
-        private byte[] username, password, ip, port;
+        /// <summary>
+        /// Username for access.
+        /// </summary>
         public byte[] Username { get; set; }
+
+        /// <summary>
+        /// Password for access.
+        /// </summary>
         public byte[] Password { get; set; }
+
+        /// <summary>
+        /// IP address for a MySQL database.
+        /// </summary>
         public byte[] IP { get; set; }
+
+        /// <summary>
+        /// Port for a MySQL database.
+        /// </summary>
         public byte[] Port { get; set; }
     }
 
@@ -37,13 +51,21 @@ namespace Secretary
     /// </summary>
     public partial class Login : Window
     {
-
+        /// <summary>
+        /// Path to a file to with stored credentials.
+        /// </summary>
         private string credentialsFilepath = Path.Combine(
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
             "credential.xml");
-        // Additional salt
+
+        /// <summary>
+        /// Array with salt.
+        /// </summary>
         static byte[] s_additionalEntropy = { 3, 8, 10, 98, 128, 245, 2, 0};
 
+        /// <summary>
+        /// Constructor with initialization.
+        /// </summary>
         public Login()
         {
             InitializeComponent();
@@ -96,7 +118,7 @@ namespace Secretary
                 return ProtectedData.Protect( Encoding.Unicode.GetBytes(data),
                     s_additionalEntropy, DataProtectionScope.CurrentUser);
             }
-            catch (CryptographicException e)
+            catch (CryptographicException)
             {
                 MessageBox.Show("Credentials encryption failed.",
                     "FAI Secretary", MessageBoxButton.OK,
@@ -114,7 +136,7 @@ namespace Secretary
                 return Encoding.Unicode.GetString(ProtectedData.Unprotect(data, 
                     s_additionalEntropy, DataProtectionScope.CurrentUser));
             }
-            catch (CryptographicException e)
+            catch (CryptographicException)
             {
                 return "";
             }
@@ -144,6 +166,13 @@ namespace Secretary
                 MessageBox.Show("Unable to connect to a DB.\n" +
                     ex.Number.ToString() + " - " + ex.Message,
                     "FAI Secretary", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to connect to a DB.",
+                    "FAI Secretary", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
             Control window = new Control(this.dbUsername.Text,
                 this.dbPassword.Password, this.dbIP.Text, this.dbPort.Text);

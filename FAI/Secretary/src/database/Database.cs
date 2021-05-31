@@ -103,28 +103,29 @@ namespace Secretary
                 @"CREATE TABLE IF NOT EXISTS " + dbName + @".subjects (
                     subject_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     abbreviation VARCHAR(31) UNIQUE NOT NULL,
-                    name VARCHAR(127),
+                    name VARCHAR(127) UNIQUE NOT NULL,
                     credits TINYINT UNSIGNED NOT NULL,
                     max_group_size SMALLINT UNSIGNED NOT NULL,
                     week_count TINYINT UNSIGNED NOT NULL,
-                    lecture_count TINYINT UNSIGNED NOT NULL,
                     lecture_length TINYINT UNSIGNED NOT NULL,
-                    seminar_count TINYINT UNSIGNED NOT NULL,
                     seminar_length TINYINT UNSIGNED NOT NULL,
-                    practice_count TINYINT UNSIGNED NOT NULL,
                     practice_length TINYINT UNSIGNED NOT NULL,
-                    conditions TINYINT UNSIGNED NOT NULL
+                    conditions TINYINT UNSIGNED NOT NULL,
+                    language TINYINT UNSIGNED NOT NULL
                 )  ENGINE=INNODB;",
                 @"CREATE TABLE IF NOT EXISTS " + dbName + @".labels (
                     label_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(127) UNIQUE NOT NULL,
                     type TINYINT UNSIGNED NOT NULL,
-                    student_count TINYINT UNSIGNED NOT NULL
+                    language TINYINT UNSIGNED NOT NULL,
+                    student_count SMALLINT UNSIGNED NOT NULL,
+                    hour_count DOUBLE NOT NULL,
+                    week_count TINYINT UNSIGNED NOT NULL
                 )  ENGINE=INNODB;",
                 @"CREATE TABLE IF NOT EXISTS " + dbName + @".employees (
                     employee_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(127) NOT NULL,
-                    workmail VARCHAR(127),
+                    workmail VARCHAR(127) UNIQUE NOT NULL,
                     privatemail VARCHAR(127),
                     workpoints SMALLINT UNSIGNED NOT NULL,
                     workpoints_en SMALLINT UNSIGNED NOT NULL,
@@ -134,7 +135,7 @@ namespace Secretary
                 @"CREATE TABLE IF NOT EXISTS " + dbName + @".student_groups (
                     group_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     abbreviation VARCHAR(31) UNIQUE NOT NULL,
-                    name VARCHAR(127) NOT NULL,
+                    name VARCHAR(127) UNIQUE NOT NULL,
                     year TINYINT UNSIGNED NOT NULL,
                     semester TINYINT UNSIGNED NOT NULL,
                     form TINYINT UNSIGNED NOT NULL,
@@ -210,12 +211,13 @@ namespace Secretary
 
         /**
          * <summary> Inserts a subject into the database. Checks for validity of parameters. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertSubject(Subject s)
+        public UInt32 InsertSubject(Subject s)
         {
             string query = @"INSERT INTO 
-                subjects (abbreviation, name, credits, max_group_size, week_count, lecture_count, lecture_length, seminar_count, seminar_length, practice_count, practice_length, conditions)
-                VALUES (@abbreviation, @name, @credits, @max_group_size, @week_count, @lecture_count, @lecture_length, @seminar_count, @seminar_length, @practice_count, @practice_length, @conditions)";
+                subjects (abbreviation, name, credits, max_group_size, week_count, lecture_length, seminar_length, practice_length, conditions, language)
+                VALUES (@abbreviation, @name, @credits, @max_group_size, @week_count, @lecture_length, @seminar_length, @practice_length, @conditions, @language)";
 
             // check string lengths
             if (s.Abbreviation.Length > 31)
@@ -236,16 +238,17 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@credits", s.Credits);
                 cmd.Parameters.AddWithValue("@max_group_size", s.MaxGroupSize);
                 cmd.Parameters.AddWithValue("@week_count", s.WeekCount);
-                cmd.Parameters.AddWithValue("@lecture_count", s.LectureCount);
                 cmd.Parameters.AddWithValue("@lecture_length", s.LectureLength);
-                cmd.Parameters.AddWithValue("@seminar_count", s.SeminarCount);
                 cmd.Parameters.AddWithValue("@seminar_length", s.SeminarLength);
-                cmd.Parameters.AddWithValue("@practice_count", s.PracticeCount);
                 cmd.Parameters.AddWithValue("@practice_length", s.PracticeLength);
                 cmd.Parameters.AddWithValue("@conditions", s.Conditions);
+                cmd.Parameters.AddWithValue("@language", s.Language);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -259,13 +262,11 @@ namespace Secretary
                 credits= @credits, 
                 max_group_size= @max_group_size, 
                 week_count= @week_count, 
-                lecture_count= @lecture_count, 
                 lecture_length= @lecture_length, 
-                seminar_count= @seminar_count, 
                 seminar_length= @seminar_length, 
-                practice_count= @practice_count, 
                 practice_length= @practice_length, 
-                conditions= @conditions
+                conditions= @conditions,
+                language= @language
                 WHERE (subject_id= @subject_id)";
 
             // check string lengths
@@ -288,13 +289,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@credits", s.Credits);
                 cmd.Parameters.AddWithValue("@max_group_size", s.MaxGroupSize);
                 cmd.Parameters.AddWithValue("@week_count", s.WeekCount);
-                cmd.Parameters.AddWithValue("@lecture_count", s.LectureCount);
                 cmd.Parameters.AddWithValue("@lecture_length", s.LectureLength);
-                cmd.Parameters.AddWithValue("@seminar_count", s.SeminarCount);
                 cmd.Parameters.AddWithValue("@seminar_length", s.SeminarLength);
-                cmd.Parameters.AddWithValue("@practice_count", s.PracticeCount);
                 cmd.Parameters.AddWithValue("@practice_length", s.PracticeLength);
                 cmd.Parameters.AddWithValue("@conditions", s.Conditions);
+                cmd.Parameters.AddWithValue("@language", s.Language);
                 cmd.ExecuteNonQuery();
                 this.CloseConnection();
             }
@@ -341,13 +340,11 @@ namespace Secretary
                         Convert.ToByte(dataReader["credits"]),
                         Convert.ToUInt16(dataReader["max_group_size"]),
                         Convert.ToByte(dataReader["week_count"]),
-                        Convert.ToByte(dataReader["lecture_count"]),
                         Convert.ToByte(dataReader["lecture_length"]),
-                        Convert.ToByte(dataReader["seminar_count"]),
                         Convert.ToByte(dataReader["seminar_length"]),
-                        Convert.ToByte(dataReader["practice_count"]),
                         Convert.ToByte(dataReader["practice_length"]),
-                        (SubjectConditions) Convert.ToByte(dataReader["conditions"])
+                        (SubjectConditions) Convert.ToByte(dataReader["conditions"]),
+                        (StudyLanguage) Convert.ToByte(dataReader["language"])
                         );
                     subjects.Add(s.Id, s);
                 }
@@ -363,21 +360,28 @@ namespace Secretary
 
         /**
          * <summary> Inserts a label into the database. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertLabel(Label l)
+        public UInt32 InsertLabel(Label l)
         {
             string query = @"INSERT INTO 
-                labels (name, type, student_count)
-                VALUES (@name, @type, @student_count)";
+                labels (name, type, language, student_count, hour_count, week_count)
+                VALUES (@name, @type, @language, @student_count, @hour_count, @week_count)";
             if (this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@name", l.Name);
                 cmd.Parameters.AddWithValue("@type", l.Type);
+                cmd.Parameters.AddWithValue("@language", l.Language);
                 cmd.Parameters.AddWithValue("@student_count", l.StudentCount);
+                cmd.Parameters.AddWithValue("@hour_count", l.HourCount);
+                cmd.Parameters.AddWithValue("@week_count", l.WeekCount);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -388,7 +392,10 @@ namespace Secretary
             string query = @"UPDATE labels SET 
                 name= @name,
                 type= @type,
-                student_count= @student_count
+                language= @language,
+                student_count= @student_count,
+                hour_count= @hour_count,
+                week_count= @week_count
                 WHERE (label_id= @label_id)";
             if (this.OpenConnection() == true)
             {
@@ -396,7 +403,10 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@label_id", l.Id);
                 cmd.Parameters.AddWithValue("@name", l.Name);
                 cmd.Parameters.AddWithValue("@type", l.Type);
+                cmd.Parameters.AddWithValue("@language", l.Language);
                 cmd.Parameters.AddWithValue("@student_count", l.StudentCount);
+                cmd.Parameters.AddWithValue("@hour_count", l.HourCount);
+                cmd.Parameters.AddWithValue("@week_count", l.WeekCount);
                 cmd.ExecuteNonQuery();
                 this.CloseConnection();
             }
@@ -442,7 +452,10 @@ namespace Secretary
                         null,
                         null,
                         (LabelType)Convert.ToByte(dataReader["type"]),
-                        Convert.ToByte(dataReader["student_count"])
+                        (StudyLanguage)Convert.ToByte(dataReader["language"]),
+                        Convert.ToUInt16(dataReader["student_count"]),
+                        Convert.ToDouble(dataReader["hour_count"]),
+                        Convert.ToByte(dataReader["week_count"])
                         );
                     labels.Add(l.Id, l);
                 }
@@ -458,8 +471,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts an employee into the database. Checks for validity of parameters. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertEmployee(Employee e)
+        public UInt32 InsertEmployee(Employee e)
         {
             string query = @"INSERT INTO 
                 employees (name, workmail, privatemail, workpoints, workpoints_en, workload, status)
@@ -492,8 +506,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@workload", e.WorkLoad);
                 cmd.Parameters.AddWithValue("@status", e.Status);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -600,8 +617,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts a student group into the database. Checks for validity of parameters. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertStudentGroup(StudentGroup sg)
+        public UInt32 InsertStudentGroup(StudentGroup sg)
         {
             string query = @"INSERT INTO 
                 student_groups (abbreviation, name, year, semester, form, type, language, student_count)
@@ -629,8 +647,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@language", sg.Language);
                 cmd.Parameters.AddWithValue("@student_count", sg.StudentCount);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -735,8 +756,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts weights into the database. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertWeights(Weights w)
+        public UInt32 InsertWeights(Weights w)
         {
             string query = @"INSERT INTO 
                 weights (lecture, practice, seminar, assessment, classified_assessment, exam, 
@@ -759,8 +781,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@classified_assessment_en", w.EnglishClassifiedAssessment);
                 cmd.Parameters.AddWithValue("@exam_en", w.EnglishExam);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -847,8 +872,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts a subject-label relation into the database. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertSubjectLabel(Subject s, Label l)
+        public UInt32 InsertSubjectLabel(Subject s, Label l)
         {
             string query = @"INSERT INTO 
                 subject_labels (subject_id, label_id)
@@ -859,8 +885,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@label_id", l.Id);
                 cmd.Parameters.AddWithValue("@subject_id", s.Id);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -880,24 +909,6 @@ namespace Secretary
                 this.CloseConnection();
             }
         }
-
-        /**
-         * <summary> Updates a subject-label relation in the database. Changes a label of a subject. </summary>
-         *//*
-        public void UpdateSubjectsLabel(Subject s, Label l)
-        {
-            string query = @"UPDATE subject_labels SET 
-                label_id= @label_id
-                WHERE (subject_id= @subject_id)";
-            if (this.OpenConnection() == true)
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@label_id", l.Id);
-                cmd.Parameters.AddWithValue("@subject_id", s.Id);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
-            }
-        }*/
 
         /**
          * <summary> Deletes a subject-label relation from the database. </summary>
@@ -965,8 +976,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts a subject-student group relation into the database. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertSubjectStudentGroup(Subject s, StudentGroup sg)
+        public UInt32 InsertSubjectStudentGroup(Subject s, StudentGroup sg)
         {
             string query = @"INSERT INTO 
                 subject_student_groups (subject_id, group_id)
@@ -977,8 +989,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@subject_id", s.Id);
                 cmd.Parameters.AddWithValue("@group_id", sg.Id);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -1083,8 +1098,9 @@ namespace Secretary
 
         /**
          * <summary> Inserts an employee-label relation into the database. </summary>
+         * <returns> ID of an inserted record. </returns>
          */
-        public void InsertEmployeeLabel(Employee e, Label l)
+        public UInt32 InsertEmployeeLabel(Employee e, Label l)
         {
             string query = @"INSERT INTO 
                 employee_labels (employee_id, label_id)
@@ -1095,8 +1111,11 @@ namespace Secretary
                 cmd.Parameters.AddWithValue("@employee_id", e.Id);
                 cmd.Parameters.AddWithValue("@label_id", l.Id);
                 cmd.ExecuteNonQuery();
+                var id = cmd.LastInsertedId;
                 this.CloseConnection();
+                return Convert.ToUInt32(id);
             }
+            return 0;
         }
 
         /**
@@ -1116,24 +1135,6 @@ namespace Secretary
                 this.CloseConnection();
             }
         }
-
-        /**
-         * <summary> Updates an employee-label relation in the database. Changes a label of an employee. </summary>
-         *//*
-        public void UpdateEmployeesLabel(Employee e, Label l)
-        {
-            string query = @"UPDATE employee_labels SET 
-                label_id= @label_id
-                WHERE (employee_id= @employee_id)";
-            if (this.OpenConnection() == true)
-            {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@employee_id", e.Id);
-                cmd.Parameters.AddWithValue("@label_id", l.Id);
-                cmd.ExecuteNonQuery();
-                this.CloseConnection();
-            }
-        }*/
 
         /**
          * <summary> Deletes an employee-label relation from the database. </summary>
@@ -1197,112 +1198,6 @@ namespace Secretary
             {
                 return labels;
             }
-        }
-
-        /**
-         * <summary> Initial test of the database. </summary>
-         */
-        private void InitialDatabaseTest()
-        {
-            /* Setup */
-            SetupDatabase();
-            /* Test of subject methods. */
-            InsertSubject(new Subject(0, "TT6TT", "Test subject", 0, 256, 14, 10, 1, 11, 1, 12, 1, SubjectConditions.Unknown));
-            InsertSubject(new Subject(0, "TT7TT", "Test subject", 0, 256, 14, 10, 1, 11, 1, 12, 1, SubjectConditions.Unknown));
-            InsertSubject(new Subject(0, "TT8TT", "Test subject", 0, 256, 14, 10, 1, 11, 1, 12, 1, SubjectConditions.Unknown));
-            InsertSubject(new Subject(0, "TT9TT", "Test subject", 0, 256, 14, 10, 1, 11, 1, 12, 1, SubjectConditions.Unknown));
-            List<Subject> s = GetSubjects().Select(x => x.Value).ToList();
-            //s.ForEach(x => Console.WriteLine(x));
-            if (s.Count > 0)
-            {
-                UpdateSubject(new Subject(s.Last().Id, "TTXTT", "Test subject", 1, 128, 14, 10, 2, 11, 2, 12, 2, SubjectConditions.Unknown));
-                DeleteSubject(s[s.Count - 2]);
-            }
-            s = GetSubjects().Select(x => x.Value).ToList();
-            //s.ForEach(x => Console.WriteLine(x));
-            /* Test of employee methods. */
-            InsertEmployee(new Employee(0, "John Doe1", "johnDoe@test_work.uni", "johnDoe@test_private.com", 1000, 500, 1.0, EmployeeStatus.Unknown));
-            InsertEmployee(new Employee(0, "John Doe2", "johnDoe@test_work.uni", "johnDoe@test_private.com", 1000, 500, 1.0, EmployeeStatus.Unknown));
-            InsertEmployee(new Employee(0, "John Doe3", "johnDoe@test_work.uni", "johnDoe@test_private.com", 1000, 500, 1.0, EmployeeStatus.Unknown));
-            InsertEmployee(new Employee(0, "John Doe4", "johnDoe@test_work.uni", "johnDoe@test_private.com", 1000, 500, 1.0, EmployeeStatus.Unknown));
-            List<Employee> e = GetEmployees().Select(x => x.Value).ToList();
-            //e.ForEach(x => Console.WriteLine(x.ToString()));
-            if (e.Count > 0)
-            {
-                UpdateEmployee(new Employee(e[e.Count - 1].Id, "Jane Doe", "janeDoe@test_work.uni", "janeDoe@test_private.com", 500, 250, 0.5, EmployeeStatus.Doctorate));
-                DeleteEmployee(e[e.Count - 2]);
-            }
-            e = GetEmployees().Select(x => x.Value).ToList();
-            //e.ForEach(x => Console.WriteLine(x.ToString()));
-            /* Test of group methods. */
-            InsertStudentGroup(new StudentGroup(0, "TE1", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            InsertStudentGroup(new StudentGroup(0, "TE2", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            InsertStudentGroup(new StudentGroup(0, "TE3", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            InsertStudentGroup(new StudentGroup(0, "TE4", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            InsertStudentGroup(new StudentGroup(0, "TE5", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            InsertStudentGroup(new StudentGroup(0, "TE6", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 20));
-            List<StudentGroup> g = GetStudentGroups().Select(x => x.Value).ToList();
-            //g.ForEach(x => Console.WriteLine(x));
-            if (g.Count > 0)
-            {
-                UpdateStudentGroup(new StudentGroup(g.Last().Id, "TEX", "TestGroup", StudyYear.Unknown, StudySemester.Unknown, StudyForm.Unknown, StudyType.Unknown, StudyLanguage.Unknown, 10));
-                DeleteStudentGroup(g[g.Count - 2]);
-            }
-            g = GetStudentGroups().Select(x => x.Value).ToList();
-            //g.ForEach(x => Console.WriteLine(x));
-            /* Test of label methods. */
-            InsertLabel(new Label(0, "Test 1", null, null, LabelType.Unknown, 20));
-            InsertLabel(new Label(0, "Test 2", null, null, LabelType.Unknown, 20));
-            InsertLabel(new Label(0, "Test 3", null, null, LabelType.Unknown, 20));
-            InsertLabel(new Label(0, "Test 4", null, null, LabelType.Unknown, 20));
-            InsertLabel(new Label(0, "Test 5", null, null, LabelType.Unknown, 20));
-            InsertLabel(new Label(0, "Test 6", null, null, LabelType.Unknown, 20));
-            List<Label> l = GetLabels().Select(x => x.Value).ToList();
-            //l.ForEach(x => Console.WriteLine(x));
-            if (l.Count > 0)
-            {
-                UpdateLabel(new Label(l[l.Count - 1].Id, "Test X", null, null, LabelType.Unknown, 10));
-                DeleteLabel(l[l.Count - 2]);
-            }
-            l = GetLabels().Select(x => x.Value).ToList();
-            //l.ForEach(x => Console.WriteLine(x));
-            /* Test of weights methods. */
-            InsertWeights(new Weights(0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0));
-            Weights w = GetWeights();
-            //Console.WriteLine(w);
-            UpdateWeights(new Weights(w.Id, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5));
-            /* Test of subject-label methods. */
-            InsertSubjectLabel( s[s.Count - 1], l[l.Count - 1]);
-            InsertSubjectLabel( s[s.Count - 2], l[l.Count - 2]);
-            InsertSubjectLabel( s[s.Count - 1], l[l.Count - 3]);
-            InsertSubjectLabel( s[s.Count - 2], l[l.Count - 4]);
-            //GetSubjectsLabels(  s[s.Count - 1]).ForEach(x => Console.WriteLine(x));
-            UpdateLabelsSubject(s[s.Count - 3], l[l.Count - 4]);
-            //UpdateSubjectsLabel(s[s.Count - 3], l[l.Count - 5]);
-            DeleteSubjectLabel( s[s.Count - 1], l[l.Count - 1]);
-            //GetSubjectsLabels(  s[s.Count - 1]).ForEach(x => Console.WriteLine(x));
-            /* Test of subject-student group methods. */
-            InsertSubjectStudentGroup( s[s.Count - 1], g[g.Count - 1]);
-            InsertSubjectStudentGroup( s[s.Count - 2], g[g.Count - 2]);
-            InsertSubjectStudentGroup( s[s.Count - 1], g[g.Count - 3]);
-            InsertSubjectStudentGroup( s[s.Count - 2], g[g.Count - 4]);
-            //GetSubjectsStudentGroups(  s[s.Count - 1]).ForEach(x => Console.WriteLine(x));
-            UpdateStudentGroupsSubject(s[s.Count - 3], g[g.Count - 4]);
-            UpdateSubjectsStudentGroup(s[s.Count - 3], g[g.Count - 5]);
-            DeleteSubjectStudentGroup( s[s.Count - 1], g[g.Count - 1]);
-            //GetSubjectsStudentGroups(  s[s.Count - 1]).ForEach(x => Console.WriteLine(x));
-            /* Test of employee-label methods. */
-            InsertEmployeeLabel( e[e.Count - 1], l[l.Count - 1]);
-            InsertEmployeeLabel( e[e.Count - 2], l[l.Count - 2]);
-            InsertEmployeeLabel( e[e.Count - 1], l[l.Count - 3]);
-            InsertEmployeeLabel( e[e.Count - 2], l[l.Count - 4]);
-            //GetEmployeesLabels(  e[e.Count - 1]).ForEach(x => Console.WriteLine(x));
-            UpdateLabelsEmployee(e[e.Count - 3], l[l.Count - 4]);
-            //UpdateEmployeesLabel(e[e.Count - 3], l[l.Count - 5]);
-            DeleteEmployeeLabel( e[e.Count - 1], l[l.Count - 1]);
-            //GetEmployeesLabels(  e[e.Count - 1]).ForEach(x => Console.WriteLine(x));
-            /* Delete database. */
-            //DeleteDatabase();
         }
     }
 }

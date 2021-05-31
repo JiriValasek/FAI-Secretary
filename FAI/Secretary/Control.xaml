@@ -9,13 +9,13 @@
         Title="FAI Secretary - Dashboard" Height="350" Width="750" MinHeight="350" MinWidth="750">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <TabControl x:Name="tabs" SelectionChanged="TabsSelectionChanged">
-            <TabItem x:Name="tabOverview" Header="Overview" FontSize="14" TabIndex="0">
+            <TabItem x:Name="tabOverview" Header="Overview" FontSize="14" TabIndex="{Binding Tabs.Overview}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160*"/>
-                        <ColumnDefinition Width="23*"/>
-                        <ColumnDefinition Width="212*"/>
-                        <ColumnDefinition Width="394*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
@@ -23,25 +23,57 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <Label Content="You currently manage: " Grid.Column="0" Grid.Row="0" 
-                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" Grid.ColumnSpan="3" Margin="0,0,0.4,0.2"/>
-                    <Label x:Name="oSubjects" Content="" Grid.Column="0" 
-                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" Grid.ColumnSpan="3" Margin="0,31,0.4,0.4" Grid.RowSpan="2"/>
-                    <Label x:Name="oStudentGroups" Content="" Grid.Column="0" Grid.Row="1" 
-                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" Grid.ColumnSpan="3" Margin="0,30.8,0.4,30.8" Grid.RowSpan="3"/>
-                    <Label x:Name="oStudentGroupKinds" Content="" Grid.Column="0" Grid.Row="3" 
-                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" Grid.ColumnSpan="3" Margin="0,0.4,0.4,31" Grid.RowSpan="2"/>
-                    <Label x:Name="oEmployees" Content="" Grid.Column="0" Grid.Row="4" 
-                        HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" Grid.ColumnSpan="3" Margin="0,0.2,0.4,0"/>
+                    <Label Content="You currently have: " Grid.Column="0" Grid.Row="0" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" 
+                        Grid.ColumnSpan="4" Margin="0,0,0,0" FontWeight="DemiBold"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Subjects (total):" Margin="5,1"/>
+                    <TextBox x:Name="oSubjectTotal" Grid.Row="1" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Green"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="Subjects with empty labels:" Margin="5,1"/>
+                    <TextBox x:Name="oSubjectWithEmptyLabels" Grid.Row="1" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Orange"/>
+                    <Label Grid.Row="2" Grid.Column="2" Content="Subjects without students:" Margin="5,1"/>
+                    <TextBox x:Name="oSubjectWithoutStudents" Grid.Row="2" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Red"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="Student groups (total):" Margin="5,1"/>
+                    <TextBox x:Name="oStudentGroupsTotal" Grid.Row="3" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Green"/>
+                    <Label Grid.Row="3" Grid.Column="2" Content="Student groups without subjects:" Margin="5,1"/>
+                    <TextBox x:Name="oStudentGroupsWithoutSubject" Grid.Row="3" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Orange"/>
+                    <Label Grid.Row="4" Grid.Column="2" Content="Empty student groups:" Margin="5,1"/>
+                    <TextBox x:Name="oStudentGroupsEmpty" Grid.Row="4" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Red"/>
+                    <Label Grid.Row="5" Grid.Column="0" Content="Employees (total):"  Margin="5,1"/>
+                    <TextBox x:Name="oEmployeesTotal" Grid.Row="5" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Green"/>
+                    <Label Grid.Row="5" Grid.Column="2" Content="Employees with too many workpoints :"  Margin="5,1"/>
+                    <TextBox x:Name="oEmployeesManyWorkpoints" Grid.Row="5" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Orange"/>
+                    <Label Grid.Row="6" Grid.Column="2" Content="Employees with too little workpoints :"  Margin="5,1"/>
+                    <TextBox x:Name="oEmployeesLittleWorkpoints" Grid.Row="6" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Red"/>
+                    <Label Grid.Row="7" Grid.Column="0" Content="Labels (total):"  Margin="5,1"/>
+                    <TextBox x:Name="oLabelsTotal" Grid.Row="7" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Green"/>
+                    <Label Grid.Row="7" Grid.Column="2" Content="Unassigned labels:"  Margin="5,1" />
+                    <TextBox x:Name="oLabelsUnassigned" Grid.Row="7" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Orange"/>
+                    <Label Grid.Row="8" Grid.Column="0" Content="Special labels (total):"  Margin="5,1"/>
+                    <TextBox x:Name="oLabelsSpecial" Grid.Row="8" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Magenta"/>
+                    <Label Grid.Row="8" Grid.Column="2" Content="Empty labels:"  Margin="5,1"/>
+                    <TextBox x:Name="oLabelsEmpty" Grid.Row="8" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Red"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabEmployees" Header="Employees" FontSize="14" TabIndex="1">
+            <TabItem x:Name="tabEmployees" Header="Employees" FontSize="14"  TabIndex="{Binding Tabs.Employees}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -62,8 +94,14 @@
                         <ComboBox x:Name="eEmployees" HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" Grid.Column="1" Margin="6,6,6,6" 
-                                FontSize="14" SelectionChanged="EmployeeSelectionChanged"                           
-                                DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                                FontSize="14" SelectionChanged="EmployeeSelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Object.Name}" Foreground="{Binding Foreground}"
+                                               FontWeight="Bold"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Button x:Name="eNew" Content="New" HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch" Margin="6,6,6,6" Click="EmployeeNewClicked"
                                 Grid.Column="2" VerticalContentAlignment="Center" 
@@ -185,10 +223,16 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <CheckBox Content="{Binding ObjectData.Name}" IsChecked="{Binding IsSelected}"/>
+                                            <CheckBox Content="{Binding ObjectData.Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsEnabled}" 
+                                                      Checked="EmployeeRecomputePoints" Unchecked="EmployeeRecomputePoints"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                             </ListBox>
                         </Grid>
                     </Grid>
@@ -217,7 +261,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabSubjects" Header="Subjects" FontSize="14">
+            <TabItem x:Name="tabSubjects" Header="Subjects" FontSize="14"  TabIndex="{Binding Tabs.Subjects}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -244,8 +288,14 @@
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             VerticalAlignment="Stretch" Grid.Column="1"
                             Margin="6,6,6,6" FontSize="14"
-                            SelectionChanged="SubjectSelectionChanged"                           
-                            DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                            SelectionChanged="SubjectSelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Object.Name}" Foreground="{Binding Foreground}"
+                                               FontWeight="Bold"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Button x:Name="sNew" Content="New" HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch" Margin="6,6,6,6" Click="SubjectNewClicked"
                             Grid.Column="2" VerticalContentAlignment="Center" 
@@ -262,34 +312,33 @@
                     </Grid>
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5*"/>
-                            <ColumnDefinition Width="15*"/>
                             <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="40*"/>
+                            <ColumnDefinition Width="34*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="12*"/>
                         </Grid.ColumnDefinitions>
+                        <Label Content="Name:" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
+                            Grid.Column="0" VerticalAlignment="Stretch"/>
+                        <TextBox x:Name="sName" Margin="6,6,6,6" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Grid.Column="1" />
                         <Label Content="Abbr.:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Stretch" Grid.Column="0"
+                            VerticalAlignment="Stretch" Grid.Column="2"
                             FontSize="14"/>
                         <TextBox x:Name="sAbbreviation" Margin="6,6,6,6" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="1" />
-                        <Label Content="Name:" HorizontalContentAlignment="Center" 
-                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
-                            Grid.Column="2" VerticalAlignment="Stretch"/>
-                        <TextBox x:Name="sName" Margin="6,6,6,6" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Grid.Column="3" />
-
                     </Grid>
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="9*"/>
-                            <ColumnDefinition Width="14*"/>
-                            <ColumnDefinition Width="11*"/>
+                            <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="12*"/>
                             <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="14*"/>
+                            <ColumnDefinition Width="12*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="12*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Credits:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
@@ -316,12 +365,12 @@
                     </Grid>
                     <Grid Grid.Row="3">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="13*"/>
-                            <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="13*"/>
+                            <ColumnDefinition Width="12*"/>
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="12*"/>
+                            <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="12*"/>
+                            <ColumnDefinition Width="10*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Lecture length [h]:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
@@ -347,43 +396,34 @@
                     </Grid>
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="12*"/>
-                            <ColumnDefinition Width="11*"/>
-                            <ColumnDefinition Width="12*"/>
-                            <ColumnDefinition Width="11*"/>
-                            <ColumnDefinition Width="13*"/>
-                            <ColumnDefinition Width="11*"/>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="16*"/>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="16*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Lecture count:" HorizontalContentAlignment="Center" 
+
+
+                        <Label Content="Language:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Stretch" Grid.Column="0" FontSize="14"/>
-                        <TextBox x:Name="sLectureCount" Margin="5.2,5,5,0" HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch" Grid.Column="0"
+                            FontSize="14"/>
+                        <ComboBox x:Name="sLanguage" Margin="5.2,5,5,0" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="1"  Height="31" VerticalAlignment="Top"
-                            PreviewTextInput="CheckIntTyping" DataObject.Pasting="CheckIntPasting"/>
-                        <Label Content="Seminar count:" HorizontalContentAlignment="Center" 
+                            Grid.Column="1"  Height="31" VerticalAlignment="Top"/>
+                        <Label Content="Student groups:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             Grid.Column="2" VerticalAlignment="Stretch"
                             ToolTip="Maximal number of students in a class."/>
-                        <TextBox x:Name="sSeminarCount" Margin="6,6,6,6" HorizontalAlignment="Stretch"
+                        <ComboBox x:Name="sStudentGroups" Margin="6,6,6,6" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="3" PreviewTextInput="CheckIntTyping" DataObject.Pasting="CheckIntPasting"/>
-                        <Label Content="Practice count:" HorizontalContentAlignment="Center" 
-                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
-                            Grid.Column="4" VerticalAlignment="Stretch"
-                            ToolTip="Maximal number of students in a class."/>
-                        <TextBox x:Name="sPracticeCount" Margin="6,6,6,6" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="5" PreviewTextInput="CheckIntTyping" DataObject.Pasting="CheckIntPasting"/>
+                            Grid.Column="3" DisplayMemberPath="Value.Name"/>
                     </Grid>
                     <Grid Grid.Row="5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="9*"/>
-                            <ColumnDefinition Width="14*"/>
-                            <ColumnDefinition Width="6*"/>
-                            <ColumnDefinition Width="14*"/>
-                            <ColumnDefinition Width="12*"/>
-                            <ColumnDefinition Width="15*"/>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="16*"/>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="16*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Conditions:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
@@ -399,13 +439,6 @@
                         <ComboBox x:Name="sLabels" Margin="6,6,6,6" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Grid.Column="3" DisplayMemberPath="Value.Name"/>
-                        <Label Content="Student groups:" HorizontalContentAlignment="Center" 
-                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
-                            Grid.Column="4" VerticalAlignment="Stretch"
-                            ToolTip="Maximal number of students in a class."/>
-                        <ComboBox x:Name="sStudentGroups" Margin="6,6,6,6" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="5" DisplayMemberPath="Value.Name"/>
                     </Grid>
                     <Grid Grid.Row="6">
                         <Grid.ColumnDefinitions>
@@ -429,7 +462,7 @@
                             Grid.Column="3" VerticalContentAlignment="Center" 
                             HorizontalContentAlignment="Center" FontSize="14"
                             Foreground="OrangeRed"/>
-                        <Button x:Name="sGenerate" Content="Generate labels" HorizontalAlignment="Stretch"
+                        <Button x:Name="sGenerate" Content="Regenerate labels" HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch" Margin="6,6,6,6" Click="SubjectGenerateClicked"
                             Grid.Column="4" VerticalContentAlignment="Center" 
                             HorizontalContentAlignment="Center" FontSize="14"
@@ -437,7 +470,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabStudentGroups" Header="StudentGroups" FontSize="14">
+            <TabItem x:Name="tabStudentGroups" Header="StudentGroups" FontSize="14"  TabIndex="{Binding Tabs.StudentGroups}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -460,8 +493,14 @@
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             VerticalAlignment="Stretch" Grid.Column="1"
                             Margin="6,6,6,6" FontSize="14"
-                            SelectionChanged="StudentGroupSelectionChanged"                           
-                            DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                            SelectionChanged="StudentGroupSelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Object.Name}" Foreground="{Binding Foreground}"
+                                               FontWeight="Bold"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Button x:Name="sgNew" Content="New" HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch" Margin="6,6,6,6" Click="StudentGroupNewClicked"
                             Grid.Column="2" VerticalContentAlignment="Center" 
@@ -490,8 +529,8 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" Grid.Column="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="12*"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Name:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
@@ -546,19 +585,19 @@
                         </Grid>
                         <Grid Grid.Row="3" Grid.Column="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="4*"/>
                                 <ColumnDefinition Width="4*"/>
                                 <ColumnDefinition Width="4*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Content="Study form:" HorizontalContentAlignment="Center" 
+                            <Label Content="Form:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             Grid.Column="0" VerticalAlignment="Stretch"
                             ToolTip="Maximal number of students in a class."/>
                             <ComboBox x:Name="sgStudyForm" Margin="5.2,5,5,0" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Grid.Column="1"  Height="31" VerticalAlignment="Top"/>
-                            <Label Content="Study type:" HorizontalContentAlignment="Center" 
+                            <Label Content="Type:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             VerticalAlignment="Stretch" Grid.Column="2"
                             FontSize="14"/>
@@ -568,18 +607,18 @@
                         </Grid>
                         <Grid Grid.Row="4" Grid.Column="0">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Content="Study Language:" HorizontalContentAlignment="Center" 
+                            <Label Content="Language:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             Grid.Column="1" VerticalAlignment="Stretch"
                             ToolTip="Maximal number of students in a class."/>
                             <ComboBox x:Name="sgStudyLanguage" Margin="5.2,5,5,0" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="2"  Height="31" VerticalAlignment="Top"/>
+                            Grid.Column="2"  Height="31" VerticalAlignment="Top" SelectionChanged="StudentGroupLanguageSelectionChanged"/>
                         </Grid>
                         <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="7">
                             <Grid.RowDefinitions>
@@ -595,10 +634,15 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <CheckBox Content="{Binding ObjectData.Name}" IsChecked="{Binding IsSelected}"/>
+                                            <CheckBox Content="{Binding ObjectData.Name}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding IsEnabled}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                             </ListBox>
                         </Grid>
                     </Grid>
@@ -627,7 +671,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabLabels" Header="Labels" FontSize="14">
+            <TabItem x:Name="tabLabels" Header="Labels" FontSize="14"  TabIndex="{Binding Tabs.Labels}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -643,7 +687,8 @@
                             <ColumnDefinition Width="8*"/>
                             <ColumnDefinition Width="30*"/>
                             <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="22*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="12*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Label:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
@@ -653,12 +698,27 @@
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             VerticalAlignment="Stretch" Grid.Column="1"
                             Margin="6,6,6,6" FontSize="14"
-                            SelectionChanged="LabelSelectionChanged"                           
-                            DisplayMemberPath="Name" SelectedValuePath="Id"/>
-                        <Button x:Name="lEdit" Content="Edit" HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelEditClicked"
+                            SelectionChanged="LabelSelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Object.Name}" Foreground="{Binding Foreground}"
+                                               FontWeight="Bold"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button x:Name="lNew" Content="New Special" HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelNewClicked"
                             Grid.Column="2" VerticalContentAlignment="Center" 
                             HorizontalContentAlignment="Center" FontSize="14"/>
+                        <Button x:Name="lEdit" Content="Edit" HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelEditClicked"
+                            Grid.Column="3" VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontSize="14"/>
+                        <Button x:Name="lRemove" Content="Remove" HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelRemoveClicked"
+                            Grid.Column="4" VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontSize="14"
+                            Foreground="OrangeRed"/>
                     </Grid>
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -675,15 +735,24 @@
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="17*"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Type:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             VerticalAlignment="Stretch" Grid.Column="0"
                             FontSize="14"/>
-                        <TextBox x:Name="lType" Margin="6,6,6,6" HorizontalAlignment="Stretch"
+                        <ComboBox x:Name="lType" Margin="5,5,5,0" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="1" />
+                            Grid.Column="1"  Height="31" VerticalAlignment="Top"/>
+                        <Label Content="Language:" HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
+                            Grid.Column="2" VerticalAlignment="Stretch"
+                            ToolTip="Maximal number of students in a class."/>
+                        <ComboBox x:Name="lLanguage" Margin="5,5,5,0" HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Grid.Column="3"  Height="31" VerticalAlignment="Top"/>
                     </Grid>
                     <Grid Grid.Row="3">
                         <Grid.ColumnDefinitions>
@@ -742,7 +811,14 @@
                             FontSize="14"/>
                         <ComboBox x:Name="lLabelEmployee" Margin="5.2,5,5,0" HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Grid.Column="1"  Height="31" VerticalAlignment="Top"/>
+                            Grid.Column="1"  Height="31" VerticalAlignment="Top" IsSynchronizedWithCurrentItem="True">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Object.Name}" Foreground="{Binding Foreground}"
+                                               FontWeight="Bold"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Label Content="Subject:" HorizontalContentAlignment="Center" 
                             VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                             Grid.Column="2" VerticalAlignment="Stretch"
@@ -762,10 +838,6 @@
                         </Grid.ColumnDefinitions>
                         <Button x:Name="lSave" Content="Save" HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelSaveClicked"
-                            Grid.Column="1" VerticalContentAlignment="Center" 
-                            HorizontalContentAlignment="Center" FontSize="14"/>
-                        <Button x:Name="lSaveNew" Content="Save as New" HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch" Margin="6,6,6,6" Click="LabelSaveNewClicked"
                             Grid.Column="2" VerticalContentAlignment="Center" 
                             HorizontalContentAlignment="Center" FontSize="14"/>
                         <Button x:Name="lCancel" Content="Cancel" HorizontalAlignment="Stretch"
@@ -776,7 +848,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabWeights" Header="Weights" FontSize="14">
+            <TabItem x:Name="tabWeights" Header="Weights" FontSize="14"  TabIndex="{Binding Tabs.Weights}">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
