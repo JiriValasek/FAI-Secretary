@@ -22,7 +22,7 @@ namespace Secretary
         {
             get
             {
-                return this.subjects.Select(x => x.Value).OrderBy(x => x.Abbreviation).ToList();
+                return this.subjects.Select(x => x.Value).OrderBy(x => x.Name).ToList();
             }
         }
 
@@ -31,7 +31,7 @@ namespace Secretary
         { 
             get
             {
-                return this.studentGroups.Select(x => x.Value).OrderBy(x => x.Abbreviation).ToList();
+                return this.studentGroups.Select(x => x.Value).OrderBy(x => x.Name).ToList();
             }
         }
 

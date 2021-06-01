@@ -99,15 +99,18 @@ namespace Secretary
                 {
                     return "Red";
                 }
-                if (this.Object.LabelEmployee == null)
+                else if (this.Object.LabelEmployee == null)
                 {
                     return "Orange";
                 }
-                if (Object.LabelSubject == null)
+                else if (Object.LabelSubject == null)
                 {
                     return "Magenta";
                 }
-                return "Green";
+                else
+                {
+                    return "Green";
+                }
             }
         }
 
@@ -140,15 +143,18 @@ namespace Secretary
         {
             get
             {
-                if (Object.StudentGroups != null && Object.StudentGroups.Count > 0)
+                if (checkLabelsAreOK()) // students in groups are equal to students in labels
                 {
-                    if (checkLabelsAreOK())
-                    {
-                        return "Green";
-                    }
+                    return "Green";
+                }
+                else if (Object.StudentGroups != null && Object.StudentGroups.Count > 0)
+                {                    
                     return "Orange";
                 }
-                return "Red";
+                else
+                {
+                    return "Red";
+                }
             }
         }
 
@@ -230,11 +236,14 @@ namespace Secretary
                 {
                     return "Red";
                 }
-                if (Object.Subjects != null && Object.Subjects.Count > 0)
+                else if (Object.Subjects == null)
+                {
+                    return "Orange";
+                }
+                else
                 {
                     return "Green";
                 }
-                return "Orange";
             }
         }
 
@@ -271,11 +280,14 @@ namespace Secretary
                 {
                     return "Red";
                 }
-                if (Object.WorkPoints > Object.WorkLoad * MyGlobals.WORKLOAD_TO_WORKPOINTS_COEF)
+                else if (Object.WorkPoints > Object.WorkLoad * MyGlobals.WORKLOAD_TO_WORKPOINTS_COEF)
                 {
                     return "Orange";
                 }
-                return "Green";
+                else
+                {
+                    return "Green";
+                }
             }
         }
 

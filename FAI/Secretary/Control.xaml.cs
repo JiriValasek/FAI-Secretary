@@ -141,8 +141,8 @@ namespace Secretary
                         lLabels.ItemsSource = scheduler.Labels.Select(x => new ColoredLabelObject(x)).ToList();
                         if (lLabels.Items.Count > 0)
                         {
-                            lLabels.SelectedIndex = lLabels.Items.Count  >= lastInd[Tabs.StudentGroups]?
-                                Math.Max(lastInd[Tabs.StudentGroups],0) : 0;
+                            lLabels.SelectedIndex = lLabels.Items.Count  >= lastInd[Tabs.Labels]?
+                                Math.Max(lastInd[Tabs.Labels],0) : 0;
                         }
                         LabelEnableEdit(false);
                         break;
@@ -160,8 +160,9 @@ namespace Secretary
         private void ShowOverview()
         {
             oSubjectTotal.Text = scheduler.Subjects.Count.ToString();
-            oSubjectWithEmptyLabels.Text = scheduler.Subjects.Where(x => x.Labels.All(y => y.Value.LabelEmployee != null)).Count().ToString();
-            oSubjectWithoutStudents.Text = scheduler.Subjects.Where(x => x.StudentGroups.Any(y => y.Value.StudentCount == 0)).Count().ToString();
+            var csos = scheduler.Subjects.Select(x => new ColoredSubjectObject(x)).ToList();
+            oSubjectWithWrongLabels.Text = csos.Where(x => x.Foreground.ToString() == "Orange").Count().ToString();
+            oSubjectWithoutStudents.Text = csos.Where(x => x.Foreground.ToString() == "Red").Count().ToString();
             oStudentGroupsTotal.Text = scheduler.StudentGroups.Count.ToString();
             oStudentGroupsEmpty.Text = scheduler.StudentGroups.Where(x => x.StudentCount == 0).Count().ToString();
             oStudentGroupsWithoutSubject.Text = scheduler.StudentGroups.Where(x => x.Subjects.Count == 0).Count().ToString();
@@ -642,10 +643,8 @@ namespace Secretary
                     Convert.ToDouble(sPracticeLength.Text), (SubjectConditions)sConditions.SelectedIndex,
                     (StudyLanguage)sLanguage.SelectedIndex);
                 scheduler.UpdateSubject(s);
-                int ind = sSubjects.SelectedIndex;
-                sSubjects.ItemsSource = scheduler.Subjects
-                    .Select(x => new ColoredSubjectObject(x)).ToList();
-                sSubjects.SelectedIndex = ind;
+                sSubjects.ItemsSource = scheduler.Subjects.Select(x => new ColoredSubjectObject(x)).ToList();
+                sSubjects.SelectedIndex = scheduler.Subjects.FindIndex(x => x.Id == s.Id);
                 SubjectShow(((ColoredSubjectObject)sSubjects.SelectedItem).Object);
                 SubjectEnableEdit(false);
                 EnableTabChange();
@@ -1109,10 +1108,8 @@ namespace Secretary
                     }
                 }
                 scheduler.UpdateStudentGroup(sg);
-                int ind = sgGroups.SelectedIndex;
-                sgGroups.ItemsSource = scheduler.StudentGroups
-                    .Select(x => new ColoredStudentGroupObject(x)).ToList();
-                sgGroups.SelectedIndex = ind;
+                sgGroups.ItemsSource = scheduler.StudentGroups.Select(x => new ColoredStudentGroupObject(x)).ToList();
+                sgGroups.SelectedIndex = scheduler.StudentGroups.FindIndex(x => x.Id == sg.Id);
                 StudentGroupShow(((ColoredStudentGroupObject)sgGroups.SelectedItem).Object);
                 StudentGroupEnableEdit(false);
                 EnableTabChange();
@@ -1540,8 +1537,8 @@ namespace Secretary
             }
             try
             {
-                Employee ee = ((ColoredEmployeeObject)eEmployees.SelectedItem).Object;
-                ee = new Employee(ee.Id, eName.Text, eWorkMail.Text, ePrivateMail.Text,
+                Employee e = ((ColoredEmployeeObject)eEmployees.SelectedItem).Object;
+                e = new Employee(e.Id, eName.Text, eWorkMail.Text, ePrivateMail.Text,
                         Convert.ToUInt16(eWorkPoints.Text), Convert.ToUInt16(eWorkPointsWithoutEnglish.Text),
                         Convert.ToDouble(eWorkLoad.Text), (EmployeeStatus)Convert.ToByte(eStatus.SelectedIndex));
                 foreach (object o in eLabels.Items)
@@ -1551,15 +1548,13 @@ namespace Secretary
                         SelectableObject<Label> sol = (SelectableObject<Label>)o;
                         if (sol.IsSelected)
                         {
-                            ee.assignLabel(sol.ObjectData);
+                            e.assignLabel(sol.ObjectData);
                         }
                     }
                 }
-                scheduler.UpdateEmployee(ee);
-                int ind = eEmployees.SelectedIndex;
-                eEmployees.ItemsSource = scheduler.Employees
-                            .Select(x => new ColoredEmployeeObject(x)).ToList();
-                eEmployees.SelectedIndex = ind;
+                scheduler.UpdateEmployee(e);
+                eEmployees.ItemsSource = scheduler.Employees.Select(x => new ColoredEmployeeObject(x)).ToList();
+                eEmployees.SelectedIndex = scheduler.Employees.FindIndex(x => x.Id == e.Id);
                 EmployeeShow(((ColoredEmployeeObject)eEmployees.SelectedItem).Object);
                 EmployeeEnableEdit(false);
                 EnableTabChange();
@@ -1968,9 +1963,8 @@ namespace Secretary
                 l.HourCount = Convert.ToDouble(lHourCount.Text);
                 l.WeekCount = Convert.ToByte(lWeekCount.Text);
                 scheduler.UpdateLabel(l);
-                int ind = lLabels.SelectedIndex;
                 lLabels.ItemsSource = scheduler.Labels.Select(x => new ColoredLabelObject(x)).ToList();
-                lLabels.SelectedIndex = ind;
+                lLabels.SelectedIndex = scheduler.Labels.FindIndex(x => x.Id == l.Id);
                 LabelShow(((ColoredLabelObject)lLabels.SelectedItem).Object);
                 LabelEnableEdit(false);
                 EnableTabChange();

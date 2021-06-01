@@ -35,10 +35,10 @@
                     <Label Grid.Row="1" Grid.Column="0" Content="Subjects (total):" Margin="5,1"/>
                     <TextBox x:Name="oSubjectTotal" Grid.Row="1" Grid.Column="1" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
                              VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Green"/>
-                    <Label Grid.Row="1" Grid.Column="2" Content="Subjects with empty labels:" Margin="5,1"/>
-                    <TextBox x:Name="oSubjectWithEmptyLabels" Grid.Row="1" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
+                    <Label Grid.Row="1" Grid.Column="2" Content="Subjects with labels not for all students:" Margin="5,1"/>
+                    <TextBox x:Name="oSubjectWithWrongLabels" Grid.Row="1" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
                              VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Orange"/>
-                    <Label Grid.Row="2" Grid.Column="2" Content="Subjects without students:" Margin="5,1"/>
+                    <Label Grid.Row="2" Grid.Column="2" Content="Subjects without students/student groups:" Margin="5,1"/>
                     <TextBox x:Name="oSubjectWithoutStudents" Grid.Row="2" Grid.Column="3" Margin="3" IsReadOnly="True" FontWeight="DemiBold"
                              VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Red"/>
                     <Label Grid.Row="3" Grid.Column="0" Content="Student groups (total):" Margin="5,1"/>
